@@ -1,0 +1,22 @@
+== ezftpsearch
+== Development version, not suitable for use.
+
+Description goes here
+
+
+== REQUIREMENT
+
+1 RAILS 2.1 for bigint (ftpentry size)
+2 ftp server should support command 'OPTS UTF8 ON' with non-ASCII file names
+
+== NOTE
+1 Use this command to view rake task's usage FIRST.
+  rake -D ezftpsearch
+
+
+== ROADMAP
+
+1. full text search
+ferret:         http://ferret.davebalmain.com/trac/wiki
+acts_as_ferret: http://rm.jkraemer.net/wiki/aaf
+rmmset-cpp:     http://rmmseg-cpp.rubyforge.org/
