@@ -1,0 +1,62 @@
+<script type="text/javascript">
+//<![CDATA[
+function check_select_status() {
+  var checkboxs = $("server_select").getElementsByTagName("input");
+  var none_select = new Boolean(true);
+  for (var i = 0; i < checkboxs.length; i++)
+  {
+    if (checkboxs[i].checked)
+    {
+      none_select = false;
+      break;
+    }
+  }
+  if (none_select)
+  {
+    $("submit_button").disabled = true;
+  }
+  else
+  {
+    $("submit_button").disabled = false;
+  }
+}
+//]]>
+</script>
+
+<div class="contextual">
+<%= link_to_if_authorized l(:label_book_new),
+                          {:controller => 'books', :action => 'new', :project_id => @project},
+                          :class => 'icon icon-add' %>
+</div>
+
+<center><div id="ezftpsearch">
+  <br clear="all"/>
+  <br/>
+  <%= image_tag "ezftpsearch.png", :plugin => "redmine_ezftpsearch" %>
+  <br/>
+  <% form_tag({:controller => 'ezftpsearch', :action => 'search'}, :method => :get ) do %>
+    <table cellpadding="0" cellspacing="0">
+      <tbody>
+        <tr valign="top">
+          <td nowrap="" align="center">
+            <%= hidden_field_tag 'project_id', @project%>
+            <%= text_field_tag 'q', @question, :size => 45, :class => 'small' %>
+            <%= submit_tag l(:button_search), :id => "submit_button" %>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <div id="server_select">
+              <% for server in @ftp_servers -%>
+                <%= check_box_tag server.id, "1", true, :onchange => "check_select_status();" %>
+                <label for="<%=server.id %>"><%=server.name %></label>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
+</div></center>
+
+<% html_title(l(:label_ezftpsearch)) -%>
