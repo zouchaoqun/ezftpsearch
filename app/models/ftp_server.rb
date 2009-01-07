@@ -21,7 +21,7 @@ class FtpServer < ActiveRecord::Base
       self.in_swap = !in_swap
       save
     rescue => detail
-      puts debug(detail)
+      puts detail
     end
   end
 
@@ -32,19 +32,10 @@ class FtpServer < ActiveRecord::Base
 
 private
   def get_list_of(ftp, parent_entry = nil)
-    #x1 = STDIN.gets
-   # xx = Iconv.iconv('UTF-8', 'GB18030', x1)
-    #puts xx
-    #exit
-    
-    #if FtpEntry.count > 100
-   #   return
-   # end
-
     puts "get list start \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
     ic = Iconv.new('UTF-8', ftp_encoding) if force_utf8
     puts "after ic.new \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
-    #puts parent_entry.path if parent_entry
+
     entry_list = parent_entry ? ftp.list(parent_entry.path) : ftp.list
     puts "after ftp.list \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
     entry_list.each do |e|
@@ -52,6 +43,10 @@ private
       puts "after parse \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
 
       puts entry.basename
+      if (entry.basename.include?("09"))
+        aa = entry.basename
+        xx = ic.iconv(aa)
+      end
       
       next if ignored_dirs.include?(entry.basename)
 
