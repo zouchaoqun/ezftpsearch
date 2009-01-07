@@ -29,7 +29,8 @@ class EzftpsearchSetup < ActiveRecord::Migration
       t.column :host, :string, :null => false
       t.column :port, :integer, :default => 21, :null => false
       t.column :ftp_type, :string, :default => 'Unix', :null => false
-      t.column :force_utf8, :boolean, :default => true, :null => false
+      t.column :ftp_encoding, :string, :default => 'ISO-8859-1'
+      t.column :force_utf8, :boolean, :default => false, :null => false
       t.column :login, :string, :null => false
       t.column :password, :string, :null => false
       t.column :ignored_dirs, :string, :default => ". .. .svn"

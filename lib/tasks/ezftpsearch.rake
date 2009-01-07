@@ -47,16 +47,16 @@ Update ftp server with the specified name, or create it if the name
 does not exist.
 Usage:
   rake ezftpsearch:update_server NAME=name HOST=host LOGIN=login \\
-        FTP_TYPE=one_of_[Unix,Microsoft,Netware] PASSWORD=password \\
+        PASSWORD=password FTP_TYPE=one_of_[Unix,Microsoft,Netware] \\
         NOTE=note IGNORED=ingored_dir_list_seperated_by_space \\
-        FORCE_UTF8=[true/false] NEW_NAME=new_name_you_want_to_change
+        FORCE_UTF8=[true/false] FTP_ENCODING=encoding[example: gb2312] \\
+        NEW_NAME=new_name_you_want_to_change
 
   description:
-        FORCE_UTF8: Means to send "OPTS UTF8 ON" to ftp server, if your ftp
+        FORCE_UTF8: Means to convert entry name to utf-8 before save, if your ftp
                     file's name contains non-ASCII characters, this option
                     should be true, else this option should be false.
-                    If the ftp server doesn't support this command, you
-                    will see an error like "502 Command not implemented".
+                    TO USE THIS OPTION, your must set FTP_ENCODING field.
 
   requied arguments are:
         NAME, HOST, LOGIN, PASSWORD
@@ -64,7 +64,8 @@ Usage:
   arguments have default value:
         FTP_TYPE: default is Unix
         IGNORED: default is '. .. .svn'
-        FORCE_UTF8: default is true
+        FORCE_UTF8: default is false
+        FTP_ENCODING: default is ISO-8859-1
 END_DESC
   task :update_server => :environment do
     if !ENV['NAME']
@@ -81,6 +82,7 @@ END_DESC
     ftp.ignored_dirs = ENV['IGNORED'] if ENV['IGNORED']
     ftp.note = ENV['NOTE'] if ENV['NOTE']
     ftp.force_utf8 = ENV['FORCE_UTF8'] if ENV['FORCE_UTF8']
+    ftp.ftp_encoding = ENV['FTP_ENCODING'] if ENV['FTP_ENCODING']
     ftp.save!
   end
 

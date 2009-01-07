@@ -9,7 +9,6 @@ class FtpServer < ActiveRecord::Base
     begin
       puts "trying ftp #{name} on #{host}"
       ftp = Net::FTP.open(host, login, password)
-      ftp.sendcmd('OPTS UTF8 ON') if force_utf8
       if in_swap
         FtpEntry.delete_all(["ftp_server_id=?", id])
       else
@@ -20,7 +19,7 @@ class FtpServer < ActiveRecord::Base
       self.in_swap = !in_swap
       save
     rescue => detail
-      puts 'ftp error: ' + detail
+      puts detail
     end
   end
 
@@ -31,14 +30,25 @@ class FtpServer < ActiveRecord::Base
 
 private
   def get_list_of(ftp, parent_entry = nil)
+
+    #if FtpEntry.count > 100
+   #   return
+   # end
+
+    puts "get list start \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
+    ic = Iconv.new('UTF-8', ftp_encoding) if force_utf8
+    puts "after ic.new \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
+    #puts parent_entry.path if parent_entry
     entry_list = parent_entry ? ftp.list(parent_entry.path) : ftp.list
+    puts "after ftp.list \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
     entry_list.each do |e|
       entry = Net::FTP::List.parse(e, ftp_type)
+      puts "after parse \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
 
       next if ignored_dirs.include?(entry.basename)
 
       entry_param = {:parent => parent_entry,
-                     :name => entry.basename,
+                     :name => force_utf8 ? ic.iconv(entry.basename) : entry.basename,
                      :size => entry.file_size,
                      :entry_datetime => entry.file_datetime,
                      :directory => entry.dir?}
@@ -47,6 +57,8 @@ private
       else
         ftp_entry = swap_ftp_entries.create(entry_param)
       end
+
+      puts "after save \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
 
       ftp_entry.path = (parent_entry ? parent_entry.path : '') + '/' + entry.basename
 
