@@ -7,6 +7,8 @@ class FtpServer < ActiveRecord::Base
   def get_entry_list
     require 'net/ftp'
     begin
+      BasicSocket.do_not_reverse_lookup = true
+
       puts "trying ftp #{name} on #{host}"
       ftp = Net::FTP.open(host, login, password)
       if in_swap
@@ -19,7 +21,7 @@ class FtpServer < ActiveRecord::Base
       self.in_swap = !in_swap
       save
     rescue => detail
-      puts detail
+      puts debug(detail)
     end
   end
 
@@ -30,7 +32,11 @@ class FtpServer < ActiveRecord::Base
 
 private
   def get_list_of(ftp, parent_entry = nil)
-
+    #x1 = STDIN.gets
+   # xx = Iconv.iconv('UTF-8', 'GB18030', x1)
+    #puts xx
+    #exit
+    
     #if FtpEntry.count > 100
    #   return
    # end
@@ -45,6 +51,8 @@ private
       entry = Net::FTP::List.parse(e, ftp_type)
       puts "after parse \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
 
+      puts entry.basename
+      
       next if ignored_dirs.include?(entry.basename)
 
       entry_param = {:parent => parent_entry,
