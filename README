@@ -13,6 +13,7 @@ Description goes here
 1 Use this command to view rake task's usage FIRST.
   rake -D ezftpsearch
 
+2 ONLY Unix type of FTP is finished and tested. Other type of ftps should modify first.
 
 == ROADMAP
 

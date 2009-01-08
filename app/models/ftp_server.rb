@@ -9,7 +9,6 @@ class FtpServer < ActiveRecord::Base
     begin
       BasicSocket.do_not_reverse_lookup = true
 
-      puts "trying ftp #{name} on #{host}"
       ftp = Net::FTP.open(host, login, password)
       if in_swap
         FtpEntry.delete_all(["ftp_server_id=?", id])
@@ -21,7 +20,7 @@ class FtpServer < ActiveRecord::Base
       self.in_swap = !in_swap
       save
     rescue => detail
-      puts detail
+      puts detail.class
     end
   end
 
@@ -32,26 +31,25 @@ class FtpServer < ActiveRecord::Base
 
 private
   def get_list_of(ftp, parent_entry = nil)
-    puts "get list start \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
     ic = Iconv.new('UTF-8', ftp_encoding) if force_utf8
-    puts "after ic.new \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
+    ic_reverse = Iconv.new(ftp_encoding, 'UTF-8') if force_utf8
 
     entry_list = parent_entry ? ftp.list(parent_entry.path) : ftp.list
-    puts "after ftp.list \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
     entry_list.each do |e|
-      entry = Net::FTP::List.parse(e, ftp_type)
-      puts "after parse \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
-
-      puts entry.basename
-      if (entry.basename.include?("09"))
-        aa = entry.basename
-        xx = ic.iconv(aa)
+      if force_utf8
+        begin
+          e_utf8 = ic.iconv(e)
+        rescue Iconv::IllegalSequence
+          puts "Iconv::IllegalSequence, file ignored. raw data: " + e
+          next
+        end
       end
-      
+      entry = Net::FTP::List.parse(force_utf8 ? e_utf8 : e, ftp_type)
+
       next if ignored_dirs.include?(entry.basename)
 
       entry_param = {:parent => parent_entry,
-                     :name => force_utf8 ? ic.iconv(entry.basename) : entry.basename,
+                     :name => entry.basename,
                      :size => entry.file_size,
                      :entry_datetime => entry.file_datetime,
                      :directory => entry.dir?}
@@ -61,11 +59,9 @@ private
         ftp_entry = swap_ftp_entries.create(entry_param)
       end
 
-      puts "after save \t" + Time.now.strftime("%H:%S.") + Time.now.tv_usec.to_s
-
-      ftp_entry.path = (parent_entry ? parent_entry.path : '') + '/' + entry.basename
-
       if entry.dir?
+        ftp_entry.path = (parent_entry ? parent_entry.path : '') + '/' +
+                          (force_utf8 ? ic_reverse.iconv(entry.basename) : entry.basename)
         get_list_of(ftp, ftp_entry)
       end
     end
