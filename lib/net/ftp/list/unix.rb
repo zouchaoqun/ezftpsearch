@@ -50,9 +50,9 @@ module Net
           @file_size = match[18]
 
           if match[20].include? ':'
-            @file_datetime = match[19] + ",#{Time.now.year} " + match[20]
+            @file_datetime = parse_datetime(match[19] + ",#{Time.now.year} " + match[20])
           else
-            @file_datetime = match[19] + ',' + match[20]
+            @file_datetime = parse_datetime(match[19] + ',' + match[20])
           end
 
           @basename = match[21].strip
@@ -63,6 +63,19 @@ module Net
           # strip the symlink stuff we don't care about
           @basename.sub!(/\s+\->.+$/, '') if @symlink
         end
+
+        private
+        def parse_datetime(dt_str)
+          begin
+            res = ParseDate.parsedate(dt_str)
+            dt = Time.local(*res)
+            (dt > Time.now) ? dt = dt.years_ago(1) : dt
+          rescue
+            puts 'Entry datetime can not be recognized.'
+            nil
+          end
+        end
+        
       end
 
     end

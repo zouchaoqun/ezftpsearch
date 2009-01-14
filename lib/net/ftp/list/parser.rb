@@ -46,13 +46,7 @@ module Net
 
         # The item's file datetime
         def file_datetime
-          begin
-            res = ParseDate.parsedate(@file_datetime)
-            Time.local(*res)
-          rescue
-            puts 'Entry datetime can not be recognized.'
-            nil
-          end
+          @file_datetime
         end
 
         # Looks like a directory, try CWD.

@@ -37,14 +37,6 @@ class EzftpsearchSetup < ActiveRecord::Migration
       t.column :note, :text
       t.column :in_swap, :boolean, :default => true, :null => false
       t.column :updated_on, :timestamp
-#todo
-#add entry count
-    end
-
-    create_table :ezftpsearch_log do |t|
-      t.column :type, :string, :null => false
-      t.column :log, :string, :null => false
-      t.column :created_on, :timestamp
     end
 
   end
@@ -53,6 +45,5 @@ class EzftpsearchSetup < ActiveRecord::Migration
     drop_table :ftp_entries
     drop_tabel :swap_ftp_entries
     drop_table :ftp_servers
-    drop_table :ezftpsearch_log
   end
 end
