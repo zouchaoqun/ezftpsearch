@@ -1,0 +1,6 @@
+<h2><%=l(:label_ftpserver_edit)%></h2>
+
+<% labelled_tabular_form_for :ftpserver, @server, :url => { :action => 'edit', :project_id => @project, :server_id => @server } do |f| %>
+<%= render :partial => 'ftpservers/form', :locals => { :f => f } %>
+<%= submit_tag l(:button_save) %>
+<% end %>

@@ -1,0 +1,14 @@
+<%= error_messages_for 'server' %>
+
+<div class="box">
+<p><%= f.text_field :name, :label => l(:field_ftpserver_name), :size => 60, :required => true %></p>
+<p><%= f.text_field :host, :label => l(:field_ftpserver_host), :size => 60, :required => true %></p>
+<p><%= f.text_field :port, :label => l(:field_ftpserver_port), :size => 60, :required => true %></p>
+<p><%= f.text_field :login, :label => l(:field_ftpserver_login), :size => 60, :required => true %></p>
+<p><%= f.text_field :password, :label => l(:field_ftpserver_password), :size => 60, :required => true %></p>
+<p><%= f.select :ftp_type, %w{Unix Microsoft Netware}, :label => l(:field_ftpserver_type) %></p>
+<p><%= f.text_field :ftp_encoding, :label => l(:field_ftpserver_encoding), :size => 60 %></p>
+<p><%= f.check_box :force_utf8, :label => l(:field_ftpserver_force_utf8) %></p>
+<p><%= f.text_field :ignored_dirs, :label => l(:field_ftpserver_ignored_dirs), :size => 60 %></p>
+<p><%= f.text_area :note, :label => l(:field_notes), :cols => 50, :rows => 5 %></p>
+</div>

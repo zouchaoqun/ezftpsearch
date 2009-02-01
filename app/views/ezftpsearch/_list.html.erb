@@ -1,0 +1,22 @@
+<table class="list">
+  <thead><tr>
+        <th><%= l(:field_entry_type) %></th>
+        <th><%= l(:field_entry_name) %></th>
+        <th><%= l(:field_entry_datetime) %></th>
+        <th><%= l(:field_entry_size) %></th>
+        <th><%= l(:field_entry_path) %></th>
+        <th><%= l(:field_entry_server) %></th>
+  </tr></thead>
+  <tbody>
+<% for entry in found_entries -%>
+  <tr class="<%= cycle("odd", "even") %>">
+        <td><%= entry.type %></td>
+	<td><%= entry.name %></td>
+	<td><%= entry.entry_datetime.strftime("%Y-%m-%d") %></td>
+	<td><%= number_to_human_size(entry.size) %></td>
+	<td><%= entry.full_path %></td>
+  	<td><a href="#" onclick="RedBox.showInline('server_info_<%=entry.ftp_server.id%>'); return false;"><%= entry.ftp_server.name %></a></td>
+  </tr>
+<% end -%>
+  </tbody>
+</table>

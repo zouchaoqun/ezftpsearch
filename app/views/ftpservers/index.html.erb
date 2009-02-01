@@ -1,0 +1,40 @@
+<% if @servers.any? %>
+  <table class="list">
+    <thead>
+      <th>#</th>
+      <th><%=l(:field_ftpserver_name)%></th>
+      <th><%=l(:field_ftpserver_host)%></th>
+      <th><%=l(:field_ftpserver_type)%></th>
+      <th><%=l(:field_ftpserver_encoding)%></th>
+      <th><%=l(:field_ftpserver_force_utf8)%></th>
+      <th><%=l(:field_ftpserver_in_swap)%></th>
+      <th><%=l(:field_updated_on)%></th>
+      <th style="width:10%"></th>
+      <th style="width:10%"></th>
+    </thead>
+    <tbody>
+      <% for server in @servers %>
+        <% unless server.new_record? %>
+          <tr class="<%= cycle 'odd', 'even' %>">
+            <td><%= server.id %></td>
+            <td><%= h(server.name) %></td>
+            <td><%= h(server.host) %></td>
+            <td><%= server.ftp_type %></td>
+            <td><%= server.ftp_encoding %></td>
+            <td><%= server.force_utf8 ? l(:general_text_yes) : l(:general_text_no) %></td>
+            <td><%= server.in_swap ? l(:general_text_yes) : l(:general_text_no) %></td>
+            <td><%= format_time(server.updated_on) %></td>
+            <td align="center"><%= link_to_if_authorized l(:button_edit), { :controller => 'ftpservers', :action => 'edit', :project_id => @project, :server_id => server }, :class => 'icon icon-edit' %></td>
+            <td align="center"><%= link_to_if_authorized l(:button_delete), {:controller => 'ftpservers', :action => 'destroy', :project_id => @project, :server_id => server}, :confirm => l(:text_are_you_sure), :method => :post, :class => 'icon icon-del' %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+
+<p><%= link_to_if_authorized l(:label_ftpserver_new), :controller => 'ftpservers', :action => 'new', :project_id => @project %></p>
+
+<% html_title(l(:label_ezftpsearch)) -%>
