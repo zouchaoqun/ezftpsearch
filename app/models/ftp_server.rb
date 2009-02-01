@@ -1,6 +1,6 @@
 class FtpServer < ActiveRecord::Base
-  has_many :ftp_entries
-  has_many :swap_ftp_entries
+  has_many :ftp_entries, :dependent => :delete_all
+  has_many :swap_ftp_entries, :dependent => :delete_all
 
   validates_presence_of :name, :host, :ftp_type, :port, :login, :password
 
@@ -24,6 +24,7 @@ class FtpServer < ActiveRecord::Base
       @logger.info("Trying ftp server " + name + " on " + host)
       BasicSocket.do_not_reverse_lookup = true
       ftp = Net::FTP.open(host, login, password)
+      ftp.passive = true
       @logger.info("Server connected")
       if in_swap
         FtpEntry.delete_all(["ftp_server_id=?", id])
@@ -106,6 +107,7 @@ puts e
       end
 
       if entry.dir?
+#sleep(1)
         ftp_entry.path = (parent_entry ? parent_entry.path : '') + '/' +
                           (force_utf8 ? ic_reverse.iconv(entry.basename) : entry.basename)
         get_list_of(ftp, ftp_entry)

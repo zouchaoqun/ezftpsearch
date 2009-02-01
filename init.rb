@@ -8,6 +8,7 @@ Redmine::Plugin.register :redmine_ezftpsearch do
 
   project_module :ezftpsearch do
     permission :view_ezftpsearch, {:ezftpsearch => [:index, :search]}, :require => :member
+    permission :manage_ftpservers, {:ftpservers => [:index, :new, :edit, :destroy]}, :require => :member
   end
 
   menu :project_menu, :ezftpsearch, {:controller => 'ezftpsearch', :action => 'index'}, :caption => :label_ezftpsearch, :param => :project_id

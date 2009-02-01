@@ -1,7 +1,31 @@
 label_ezftpsearch: FTP搜索
+label_manage_ftpservers: 管理FTP服务器
+label_ftpserver_new: 新建FTP服务器
+label_ftpserver_edit: 编辑FTP服务器
 
 button_search: FTP 搜索
 
+field_entry_type: 类型
+field_entry_name: 文件名
+field_entry_datetime: 日期
+field_entry_size: 文件大小
+field_entry_path: 路径
+field_entry_server: 服务器
 
-permission_view_ezftpsearch: 查看搜索
+field_ftpserver_name: 服务器名称
+field_ftpserver_host: 服务器地址
+field_ftpserver_port: 服务器端口
+field_ftpserver_login: 用户名
+field_ftpserver_password: 密码
+field_ftpserver_type: 服务器类型
+field_ftpserver_encoding: 服务器编码
+field_ftpserver_force_utf8: 强制转换为UTF-8
+field_ftpserver_ignored_dirs: 忽略目录列表
+field_ftpserver_in_swap: 使用swap表
+
+text_type_file: 文件
+text_type_directory: 目录
+
+permission_view_ezftpsearch: 查看FTP搜索
+permission_manage_ftpservers: 管理FTP服务器
 project_module_ezftpsearch: FTP搜索

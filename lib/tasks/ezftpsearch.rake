@@ -2,8 +2,12 @@ namespace :ezftpsearch do
   desc 'Run spider to get directory lists of all registered ftp servers.'
   task :run_spider => :environment do
     start_time = Time.now
-
-    FtpServer.find(:all).each do |ftp|
+    
+    if ENV['server']
+      query = "id = '#{ENV['server']}'"
+    end
+    
+    FtpServer.find(:all, :conditions => query).each do |ftp|
       ftp.get_entry_list
     end
 
@@ -17,7 +21,7 @@ as a result, the data in the two tables will be removed too.
 Since every spider's run will remove old entries in ftp_entries and
 swap_ftp_entries and insert new entries in these two tables, the tables'
 auto increment id may hit it's limit(INTEGER's limit is 2147483647)
-sometime. So you should call thistask periodly to reset the tables' id to 1.
+sometime. So you should call this task periodly to reset the tables' id to 1.
 NOTE: This task currently only supports MySQL. 
       If you use other type DB, you can modify this task.
 USAGE: rake ezftpsearch:clear_entry_and_reset_id SILENT=[true/false]
@@ -40,74 +44,6 @@ END_DESC
       else
         puts "The " + abcs[RAILS_ENV]["adapter"] + " database adapter is currently not supported."
     end
-  end
-
-  desc <<-END_DESC
-Update ftp server with the specified name, or create it if the name
-does not exist.
-Usage:
-  rake ezftpsearch:update_server NAME=name HOST=host LOGIN=login \\
-        PASSWORD=password FTP_TYPE=one_of_[Unix,Microsoft,Netware] \\
-        NOTE=note IGNORED=ingored_dir_list_seperated_by_space \\
-        FORCE_UTF8=[true/false] FTP_ENCODING=encoding[example: gb2312] \\
-        NEW_NAME=new_name_you_want_to_change
-
-  description:
-        FORCE_UTF8: Means to convert entry name to utf-8 before save, if your ftp
-                    file's name contains non-ASCII characters, this option
-                    should be true, else this option should be false.
-                    TO USE THIS OPTION, your must set FTP_ENCODING field.
-
-  requied arguments are:
-        NAME, HOST, LOGIN, PASSWORD
-
-  arguments have default value:
-        FTP_TYPE: default is Unix
-        IGNORED: default is '. .. .svn'
-        FORCE_UTF8: default is false
-        FTP_ENCODING: default is ISO-8859-1
-END_DESC
-  task :update_server => :environment do
-    if !ENV['NAME']
-      puts 'Please use rake -D ezftpsearch:update_server to view usage'
-      exit
-    end
-    ftp = FtpServer.find(:first, :conditions => "name = '#{ENV['NAME']}'") || FtpServer.new
-    ftp.name = ENV['NAME']
-    ftp.name = ENV['NEW_NAME'] if (!ftp.new_record? && ENV['NEW_NAME'])
-    ftp.host = ENV['HOST'] if ENV['HOST']
-    ftp.login = ENV['LOGIN'] if ENV['LOGIN']
-    ftp.password = ENV['PASSWORD'] if ENV['PASSWORD']
-    ftp.ftp_type = ENV['FTP_TYPE'] if ENV['FTP_TYPE']
-    ftp.ignored_dirs = ENV['IGNORED'] if ENV['IGNORED']
-    ftp.note = ENV['NOTE'] if ENV['NOTE']
-    ftp.force_utf8 = ENV['FORCE_UTF8'] if ENV['FORCE_UTF8']
-    ftp.ftp_encoding = ENV['FTP_ENCODING'] if ENV['FTP_ENCODING']
-    ftp.save!
-  end
-
-  desc 'List all registered ftp servers.'
-  task :list_servers => :environment do
-    FtpServer.find(:all).each do |ftp|
-      puts ftp
-    end
-  end
-
-  desc 'Remove specified ftp server. Usage: rake ezftpsearch:remove_server NAME=name'
-  task :remove_server => :environment do
-    if !ENV['NAME']
-      puts 'Please specify NAME'
-      exit
-    end
-    ftp = FtpServer.find(:first, :conditions => "name = '#{ENV['NAME']}'")
-    if !ftp
-      puts "Ftp with name:#{ENV['NAME']} not found"
-      exit
-    end
-    printf "Do you really want to REMOVE ftp NAME:#{ftp.name} HOST:#{ftp.host}? (Y/n)"
-    exit if !(STDIN.gets.match(/^Y$/i))
-
-    ftp.destroy
   end
 
 end

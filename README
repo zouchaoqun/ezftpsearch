@@ -1,13 +1,10 @@
-== ezftpsearch
-== Development version, not suitable for use.
+== ezFtpSearch 0.0.1
 
-Description goes here
-
+This is a ftp search plugin for Redmine, with a ftp spider.
 
 == REQUIREMENT
 
 1 RAILS 2.1 for bigint (ftpentry size)
-2 ftp server should support command 'OPTS UTF8 ON' with non-ASCII file names
 
 == NOTE
 1 Use this command to view rake task's usage FIRST.
@@ -15,9 +12,17 @@ Description goes here
 
 2 ONLY Unix type of FTP is finished and tested. Other type of ftps should modify first.
 
+== USAGE
+
+1 Add new ftp server in the ftp server management page.
+2 Use rake ezftpsearch:run_spider to collect ftp server's directory structure.
+3 Search.
+
 == ROADMAP
 
-1. full text search
-ferret:         http://ferret.davebalmain.com/trac/wiki
-acts_as_ferret: http://rm.jkraemer.net/wiki/aaf
-rmmset-cpp:     http://rmmseg-cpp.rubyforge.org/
+1 Multi-thread spider
+2 Ftp server directory browse
+
+== CREDITS
+
+1 Net::Ftp::List (version 2.0) module on http://rubyforge.org/projects/net-ftp-list/.
