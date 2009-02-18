@@ -1,5 +1,9 @@
 namespace :ezftpsearch do
-  desc 'Run spider to get directory lists of all registered ftp servers.'
+  desc <<-END_DESC
+Run spider to get directory lists of all registered ftp servers or a specified server.
+USAGE: rake ezftpsearch:run_spider   -  get dir of all servers
+       rake ezftpsearch:run_spider server=server_id - get dir of the server specified by server_id
+END_DESC
   task :run_spider => :environment do
     start_time = Time.now
     
