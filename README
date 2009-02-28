@@ -1,10 +1,10 @@
-== ezFtpSearch 0.0.1
+== ezFtpSearch 0.1.0
 
 This is a ftp search plugin for Redmine, with a ftp spider.
 
 == REQUIREMENT
 
-1 RAILS 2.1 for bigint (ftpentry size)
+1 RAILS 2.2.2 and redmine devel after r2493 (for I18n)
 
 == NOTE
 1 Use this command to view rake task's usage FIRST.

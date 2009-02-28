@@ -1,6 +1,32 @@
 en:
   label_ezftpsearch: FTP Search
+  label_manage_ftpservers: Manage FTP servers
+  label_ftpserver_new: New FTP server
+  label_ftpserver_edit: Edit FTP server
 
-  permission_view_ezftpsearch: View Search
+  button_search: FTP Search
 
+  field_entry_type: Type
+  field_entry_name: File name
+  field_entry_datetime: File date
+  field_entry_size: File size
+  field_entry_path: Directory
+  field_entry_server: Server
+
+  field_ftpserver_name: Server name
+  field_ftpserver_host: Server host
+  field_ftpserver_port: Server port
+  field_ftpserver_login: Login
+  field_ftpserver_password: Password
+  field_ftpserver_type: Ftp type
+  field_ftpserver_encoding: Ftp encoding
+  field_ftpserver_force_utf8: Force to convert to UTF-8
+  field_ftpserver_ignored_dirs: Ignored dir list
+  field_ftpserver_in_swap: Using swap table
+
+  text_type_file: File
+  text_type_directory: Directory
+
+  permission_view_ezftpsearch: View FTP Search
+  permission_manage_ftpservers: Manage FTP Server
   project_module_ezftpsearch: FTP Search
