@@ -82,7 +82,13 @@ private
     end
 
     entry_list.each do |e|
-puts e
+      # Some ftp will send 'total nn' string in LIST command
+      # We should ignore this line
+      #next
+      next if /^total/.match(e)
+
+      #puts e
+
       if force_utf8
         begin
           e_utf8 = ic.iconv(e)

@@ -35,7 +35,7 @@ module Net
         # Parse a Unix like FTP LIST entries.
         def initialize(raw)
           super(raw)
-          match = REGEXP.match(raw.strip) or raise ParserError
+          match = REGEXP.match(raw.strip) or raise ParserError, 'Unix: regexp exception'
 
           case match[1]
             when /d/    then @dir = true
