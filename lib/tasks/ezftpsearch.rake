@@ -18,6 +18,10 @@ END_DESC
     puts 'finished in ' + (Time.now - start_time).to_s + ' seconds'
   end
 
+#  task :m_spider do
+#
+#  end
+
   desc <<-END_DESC
 IMPORTANT: ALL FTP ENTRIES WILL BE REMOVED FROM DATABASE!
 Reset ftp_entries and swap_ftp_entries tables's auto increment id column,

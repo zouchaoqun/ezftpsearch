@@ -19,6 +19,7 @@ class FtpServer < ActiveRecord::Base
     require 'net/ftp'
     require 'logger'
     begin
+      @entry_count = 0
       start_time = Time.now
       @logger = Logger.new(RAILS_ROOT + '/log/ezftpsearch_spider.log', 'monthly')
       @logger.info("Trying ftp server " + name + " on " + host)
@@ -49,13 +50,18 @@ class FtpServer < ActiveRecord::Base
   end
   
 private
-  def get_list_of(ftp, parent_entry = nil)
+#  def get_list_by_db(ftp)
+#
+#  end
+
+
+  def get_list_of(ftp, parent_path = nil, parent_id = nil)
     ic = Iconv.new('UTF-8', ftp_encoding) if force_utf8
     ic_reverse = Iconv.new(ftp_encoding, 'UTF-8') if force_utf8
 
     retries_count = 0
     begin
-      entry_list = parent_entry ? ftp.list(parent_entry.path) : ftp.list
+      entry_list = parent_path ? ftp.list(parent_path) : ftp.list
     rescue => detail
       retries_count += 1
       @logger.error("Ftp LIST exception " + detail.class.to_s + " detail: " + detail.to_s)
@@ -87,7 +93,8 @@ private
       #next
       next if /^total/.match(e)
 
-      #puts e
+      puts "#{@entry_count} #{e}"
+      @entry_count += 1
 
       if force_utf8
         begin
@@ -101,7 +108,7 @@ private
 
       next if ignored_dirs.include?(entry.basename)
 
-      entry_param = {:parent => parent_entry,
+      entry_param = {:parent_id => parent_id,
                      :name => entry.basename,
                      :size => entry.file_size,
                      :entry_datetime => entry.file_datetime,
@@ -113,10 +120,11 @@ private
       end
 
       if entry.dir?
-#sleep(1)
-        ftp_entry.path = (parent_entry ? parent_entry.path : '') + '/' +
+#sleep(5)
+        ftp_path = (parent_path ? parent_path : '') + '/' +
                           (force_utf8 ? ic_reverse.iconv(entry.basename) : entry.basename)
-        get_list_of(ftp, ftp_entry)
+        get_list_of(ftp, ftp_path, ftp_entry.id)
+GC.start
       end
     end
   end
