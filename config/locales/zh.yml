@@ -8,7 +8,7 @@ zh:
 
   field_entry_type: 类型
   field_entry_name: 文件名
-  field_entry_datetime: 日期
+  field_entry_datetime: 日期时间
   field_entry_size: 文件大小
   field_entry_path: 路径
   field_entry_server: 服务器

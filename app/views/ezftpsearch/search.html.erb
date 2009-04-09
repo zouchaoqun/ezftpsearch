@@ -4,7 +4,7 @@
   <td><%= render :partial => 'ezftpsearch/search_form' %></td>
   </tr></table>
 </div>
-<% if @found_entries.empty? %>
+<% if !@found_entries || @found_entries.empty? %>
 <p class="nodata"><%= l(:label_no_data) %></p>
 <% else %>
 <%= render :partial => 'ezftpsearch/list', :locals => {:found_entries => @found_entries} %>

@@ -29,7 +29,7 @@ function check_select_status() {
       <tr valign="top">
         <td nowrap="" align="center">
           <%= hidden_field_tag 'project_id', @project.identifier%>
-          <%= text_field_tag 'q', @question, :size => 45, :class => 'small' %>
+          <%= text_field_tag 'fq', @ftp_question, :size => 45, :class => 'small' %>
           <%= submit_tag l(:button_search), :id => "submit_button" %>
         </td>
       </tr>

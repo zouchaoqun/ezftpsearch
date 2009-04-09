@@ -3,6 +3,8 @@ namespace :ezftpsearch do
 Run spider to get directory lists of all registered ftp servers or a specified server.
 USAGE: rake ezftpsearch:run_spider   -  get dir of all servers
        rake ezftpsearch:run_spider server=server_id - get dir of the server specified by server_id
+       rake ezftpsearch:run_spider max_retries=5 - MAX retry count is 5
+          (retry is carried out when I can't connect to server or encounter an error)(default is 5)
 END_DESC
   task :run_spider => :environment do
     start_time = Time.now
@@ -10,17 +12,19 @@ END_DESC
     if ENV['server']
       query = "id = '#{ENV['server']}'"
     end
-    
+    max_retries = ENV['max_retries'] ? ENV['max_retries'] : 5
+
+    logger = Logger.new(RAILS_ROOT + '/log/ezftpsearch_spider.log', 'monthly')
+    logger.info '--------------------------------------------------------------------------------------------------------'
+    logger.info '--------------------------------------------------------------------------------------------------------'
+    logger.close
+
     FtpServer.find(:all, :conditions => query).each do |ftp|
-      ftp.get_entry_list
+      ftp.get_entry_list(max_retries)
     end
 
-    puts 'finished in ' + (Time.now - start_time).to_s + ' seconds'
+    puts 'Task finished in ' + (Time.now - start_time).to_s + ' seconds'
   end
-
-#  task :m_spider do
-#
-#  end
 
   desc <<-END_DESC
 IMPORTANT: ALL FTP ENTRIES WILL BE REMOVED FROM DATABASE!
