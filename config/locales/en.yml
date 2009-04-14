@@ -3,12 +3,13 @@ en:
   label_manage_ftpservers: Manage FTP servers
   label_ftpserver_new: New FTP server
   label_ftpserver_edit: Edit FTP server
+  label_search_results: Search results
 
   button_search: FTP Search
 
   field_entry_type: Type
   field_entry_name: File name
-  field_entry_datetime: File date
+  field_entry_datetime: File datetime
   field_entry_size: File size
   field_entry_path: Directory
   field_entry_server: Server
@@ -26,6 +27,7 @@ en:
 
   text_type_file: File
   text_type_directory: Directory
+  text_search_result: Find <b>{{count}}</b> results for <b>{{question}}</b>. (<b>{{time}}</b> seconds)
 
   permission_view_ezftpsearch: View FTP Search
   permission_manage_ftpservers: Manage FTP Server

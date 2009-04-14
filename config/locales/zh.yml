@@ -3,6 +3,7 @@ zh:
   label_manage_ftpservers: 管理FTP服务器
   label_ftpserver_new: 新建FTP服务器
   label_ftpserver_edit: 编辑FTP服务器
+  label_search_results: 查询结果
 
   button_search: FTP 搜索
 
@@ -26,6 +27,7 @@ zh:
 
   text_type_file: 文件
   text_type_directory: 目录
+  text_search_result: 共有 <b>{{count}}</b> 项符合 <b>{{question}}</b> 的查询结果（搜索用时 <b>{{time}}</b> 秒）
 
   permission_view_ezftpsearch: 查看FTP搜索
   permission_manage_ftpservers: 管理FTP服务器

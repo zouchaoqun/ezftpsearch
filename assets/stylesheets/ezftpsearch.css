@@ -1,1 +1,8 @@
 div.redbox {display:none; border: 3px solid #ccddff; width:400px}
+#ssb {margin-top: 0pt;padding-top: 0.1em;padding-right: 0.1em;padding-bottom: 0.1em;padding-left: 0.1em;
+border-top-width: 1px;border-top-style: solid;border-top-color: #6b90da;background-color: #f0f7f9;
+background-image: none;background-repeat: repeat;background-attachment: scroll;background-position: 0% 0%;}
+#ssb div{float: left;padding-top: 4px;padding-bottom: 0pt;padding-left: 4px;padding-right: 0.5em;}
+#prs a, #prs b{margin-right: 0.6em;}
+#ssb p {text-align: right;white-space: nowrap;margin-top: 0.1em;margin-right: 0pt;margin-bottom: 0.1em;
+margin-left: 0pt;padding-top: 0.2em;padding-right: 0.2em;padding-bottom: 0.2em;padding-left: 0.2em;}

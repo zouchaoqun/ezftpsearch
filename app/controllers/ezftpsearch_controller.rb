@@ -51,42 +51,45 @@ class EzftpsearchController < ApplicationController
     @tokens = @ftp_question.scan(%r{((\s|^)"[\s\w]+"(\s|$)|\S+)}).collect {|m| '%' + m.first.gsub(%r{(^\s*"\s*|\s*"\s*$)}, '') + '%'}
     @tokens = @tokens.uniq.select {|w| !w.include?('%%') }
 
-    if !@tokens.empty?
-      like_sql = (["(name LIKE ?)"] * @tokens.size).join(' AND ')
+    @process_time = Benchmark.realtime() do
+      if !@tokens.empty?
+        like_sql = (["(name LIKE ?)"] * @tokens.size).join(' AND ')
 
-      entry_count = 0
-      if (!server_id_list.empty?)
-        query = ["#{like_sql} and ftp_server_id in (#{server_id_list.join(',')})", * @tokens.sort]
-        entry_count = FtpEntry.count(:conditions => query)
+        entry_count = 0
+        if (!server_id_list.empty?)
+          query = ["#{like_sql} and ftp_server_id in (#{server_id_list.join(',')})", * @tokens.sort]
+          entry_count = FtpEntry.count(:conditions => query)
+        end
+
+        swap_entry_count = 0
+        if (!swap_server_id_list.empty?)
+          swap_query = ["#{like_sql} and ftp_server_id in (#{swap_server_id_list.join(',')})", * @tokens.sort]
+          swap_entry_count = SwapFtpEntry.count(:conditions => swap_query)
+        end
+
+        @entry_count = entry_count + swap_entry_count
+        @entry_pages = Paginator.new self, @entry_count, per_page_option, params['page']
+
+        @found_entries = []
+
+        if (entry_count > @entry_pages.current.offset)
+          @found_entries += FtpEntry.find(:all,
+                                          :limit => @entry_pages.items_per_page,
+                                          :offset => @entry_pages.current.offset,
+                                          :conditions => query)
+        end
+
+        if (swap_entry_count > 0) && (entry_count < @entry_pages.current.last_item)
+          @found_entries += SwapFtpEntry.find(:all,
+                                              :limit => @entry_pages.items_per_page - @found_entries.size,
+                                              :offset => [@entry_pages.current.offset - entry_count, 0].max,
+                                              :conditions => swap_query)
+        end
+      else
+        @ftp_question = ""
       end
-
-      swap_entry_count = 0
-      if (!swap_server_id_list.empty?)
-        swap_query = ["#{like_sql} and ftp_server_id in (#{swap_server_id_list.join(',')})", * @tokens.sort]
-        swap_entry_count = SwapFtpEntry.count(:conditions => swap_query)
-      end
-
-      @entry_count = entry_count + swap_entry_count
-      @entry_pages = Paginator.new self, @entry_count, per_page_option, params['page']
-
-      @found_entries = []
-
-      if (entry_count > @entry_pages.current.offset)
-        @found_entries += FtpEntry.find(:all,
-                                        :limit => @entry_pages.items_per_page,
-                                        :offset => @entry_pages.current.offset,
-                                        :conditions => query)
-      end
-
-      if (swap_entry_count > 0) && (entry_count < @entry_pages.current.last_item)
-        @found_entries += SwapFtpEntry.find(:all,
-                                            :limit => @entry_pages.items_per_page - @found_entries.size,
-                                            :offset => [@entry_pages.current.offset - entry_count, 0].max,
-                                            :conditions => swap_query)
-      end
-    else
-      @ftp_question = ""
     end
+    @process_time = @process_time
 
     @ftp_servers = FtpServer.find(:all)
     render :template => 'ezftpsearch/search.html.erb', :layout => !request.xhr?

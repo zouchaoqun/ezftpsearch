@@ -12,7 +12,13 @@
   <tr class="<%= cycle("odd", "even") %>">
         <td><%= entry.type %></td>
 	<td><%= entry.name %></td>
-	<td><%= entry.entry_datetime.strftime("%Y-%m-%d %H:%M:%S") %></td>
+	<td>
+<% if (entry.entry_datetime.hour + entry.entry_datetime.min + entry.entry_datetime.sec) == 0 %>
+  <%= entry.entry_datetime.strftime("%Y-%m-%d") %>
+<% else %>
+  <%= entry.entry_datetime.strftime("%Y-%m-%d %H:%M:%S") %>
+<% end %>
+        </td>
 	<td><%= number_to_human_size(entry.size) %></td>
 	<td><%= entry.full_path %></td>
   	<td><a href="#" onclick="RedBox.showInline('server_info_<%=entry.ftp_server.id%>'); return false;"><%= entry.ftp_server.name %></a></td>

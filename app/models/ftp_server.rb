@@ -12,7 +12,7 @@ class FtpServer < ActiveRecord::Base
   def get_entry_list(max_retries = 5)
     require 'net/ftp'
     require 'logger'
-    @max_retries = max_retries
+    @max_retries = max_retries.to_i
     BasicSocket.do_not_reverse_lookup = true
     @entry_count = 0
 
@@ -45,16 +45,26 @@ class FtpServer < ActiveRecord::Base
       ftp.passive = true
       @logger.info("Server connected")
       start_time = Time.now
+      # Before get list, delete old ftp entries if there are any
       if in_swap
         FtpEntry.delete_all(["ftp_server_id=?", id])
-        @logger.info("Old ftp entries in ftp_entry deleted")
+        @logger.info("Old ftp entries in ftp_entry deleted before get entries")
       else
         SwapFtpEntry.delete_all(["ftp_server_id=?", id])
-        @logger.info("Old ftp entries in swap_ftp_entry deleted")
+        @logger.info("Old ftp entries in swap_ftp_entry deleted before get entries")
       end
       get_list_of(ftp)
       self.in_swap = !in_swap
       save
+      # After table swap, delete old ftp entries to save db space
+      if in_swap
+        FtpEntry.delete_all(["ftp_server_id=?", id])
+        @logger.info("Old ftp entries in ftp_entry deleted after get entries")
+      else
+        SwapFtpEntry.delete_all(["ftp_server_id=?", id])
+        @logger.info("Old ftp entries in swap_ftp_entry deleted after get entries")
+      end
+
       process_time = Time.now - start_time
       @logger.info("Finish getting list of server " + name + " in " + process_time.to_s + " seconds.")
       @logger.info("Total entries: #{@entry_count}. #{(@entry_count/process_time).to_i} entries per second.")
@@ -128,9 +138,9 @@ puts "#{@entry_count} #{e}"
 
       file_datetime = entry.file_datetime.strftime("%Y-%m-%d %H:%M:%S")
       sql = "insert into #{in_swap ? 'ftp_entries' : 'swap_ftp_entries'}"
-      sql +=  " (parent_id,entries_count,name,size,entry_datetime,directory,ftp_server_id)"
+      sql +=  " (parent_id,name,size,entry_datetime,directory,ftp_server_id)"
       entry_basename = entry.basename.gsub("'","''")
-      sql += " VALUES (#{parent_id || 0},0,'#{entry_basename}',#{entry.file_size},'#{file_datetime}',#{entry.dir? ? 1 : 0},#{id})"
+      sql += " VALUES (#{parent_id || 0},'#{entry_basename}',#{entry.file_size},'#{file_datetime}',#{entry.dir? ? 1 : 0},#{id})"
 
       entry_id = ActiveRecord::Base.connection.insert(sql)
       if entry.dir?

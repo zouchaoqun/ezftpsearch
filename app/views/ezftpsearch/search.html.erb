@@ -4,6 +4,12 @@
   <td><%= render :partial => 'ezftpsearch/search_form' %></td>
   </tr></table>
 </div>
+
+<div id="ssb">
+  <div id="prs"><b><%= l(:label_search_results) %></b></div>
+  <p><%= l(:text_search_result, :count => @entry_count, :question => @ftp_question, :time => format("%.3f", @process_time)) %></p>
+</div>
+<p />
 <% if !@found_entries || @found_entries.empty? %>
 <p class="nodata"><%= l(:label_no_data) %></p>
 <% else %>
