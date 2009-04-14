@@ -24,6 +24,7 @@ class FtpServer < ActiveRecord::Base
       @logger.datetime_format = "%Y-%m-%d %H:%M:%S"
       @logger.info("Trying ftp server #{name} (id=#{id}) on #{host}")
       ftp = Net::FTP.open(host, login, password)
+      ftp.passive = true
     rescue => detail
       retries_count += 1
       @logger.error("Open ftp exception: " + detail.class.to_s + " detail: " + detail.to_s)
@@ -33,7 +34,7 @@ class FtpServer < ActiveRecord::Base
         @logger.close
         exit
       end
-      ftp.close if !ftp.closed?
+      ftp.close if (ftp && !ftp.closed?)
       @logger.error("Wait 30s before retry open ftp")
       sleep(30)
       retry
@@ -42,7 +43,6 @@ class FtpServer < ActiveRecord::Base
     # Trying to get ftp entry-list
     get_list_retries = 0
     begin
-      ftp.passive = true
       @logger.info("Server connected")
       start_time = Time.now
       # Before get list, delete old ftp entries if there are any
@@ -98,11 +98,12 @@ private
       
       reconnect_retries_count = 0
       begin
-        ftp.close if !ftp.closed?
+        ftp.close if (ftp && !ftp.closed?)
         @logger.error("Wait 30s before reconnect")
         sleep(30)
         ftp.connect(host)
         ftp.login(login, password)
+        ftp.passive = true
       rescue => detail2
         reconnect_retries_count += 1
         @logger.error("Reconnect ftp failed, exception: " + detail2.class.to_s + " detail: " + detail2.to_s)
