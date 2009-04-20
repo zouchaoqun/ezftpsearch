@@ -10,9 +10,7 @@
   <tbody>
 <% for entry in found_entries -%>
   <tr class="<%= cycle("odd", "even") %>">
-        <td 
-class="<%=(entry.directory? ? 'icon icon-folder' : "icon icon-file #{Redmine::MimeType.css_class_of(entry.name)}")%>">
-<%= entry.type %></td>
+        <td class="<%=(entry.directory? ? 'icon icon-folder' : "icon icon-file #{Redmine::MimeType.css_class_of(entry.name)}")%>"><%= entry.type %></td>
 	<td><%= entry.name %></td>
 	<td>
 <% if (entry.entry_datetime.hour + entry.entry_datetime.min + entry.entry_datetime.sec) == 0 %>
