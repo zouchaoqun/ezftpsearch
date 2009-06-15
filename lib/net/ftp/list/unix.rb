@@ -21,7 +21,7 @@ module Net
         # Stolen straight from the ASF's commons Java FTP LIST parser library.
         # http://svn.apache.org/repos/asf/commons/proper/net/trunk/src/java/org/apache/commons/net/ftp/
         REGEXP = %r{
-          ([bcdlfmpSs-])
+          ^([bcdlfmpSs-])
           (((r|-)(w|-)([xsStTL-]))((r|-)(w|-)([xsStTL-]))((r|-)(w|-)([xsStTL-])))\+?\s+
           (\d+)\s+
           (\S+)\s+
@@ -29,7 +29,7 @@ module Net
           (\d+)\s+
           ((?:\d+[-/]\d+[-/]\d+)|(?:\S+\s+\S+))\s+
           (\d+(?::\d+)?)\s+
-          (\S*)(\s*.*)
+          (\S*)(\s*.*)$
         }x
 
         # Parse a Unix like FTP LIST entries.
