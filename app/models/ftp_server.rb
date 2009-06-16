@@ -137,7 +137,14 @@ puts "#{@entry_count} #{e}"
 
       @entry_count += 1
 
-      file_datetime = entry.file_datetime.strftime("%Y-%m-%d %H:%M:%S")
+      begin
+        file_datetime = entry.file_datetime.strftime("%Y-%m-%d %H:%M:%S")
+      rescue => detail3
+        puts("strftime failed, exception: " + detail3.class.to_s + " detail: " + detail3.to_s)
+        @logger.error("strftime failed, exception: " + detail3.class.to_s + " detail: " + detail3.to_s)   
+        @logger.error("raw entry: " + e)
+      end
+
       sql = "insert into #{in_swap ? 'ftp_entries' : 'swap_ftp_entries'}"
       sql +=  " (parent_id,name,size,entry_datetime,directory,ftp_server_id)"
       entry_basename = entry.basename.gsub("'","''")
