@@ -53,7 +53,7 @@ class FtpServer < ActiveRecord::Base
         @logger.info("Old ftp entries in swap_ftp_entry deleted before get entries")
       end
       @entry_count = 0
-      get_list_of(ftp, '/product/00_test')
+      get_list_of(ftp)
       self.in_swap = !in_swap
       save
       # After table swap, delete old ftp entries to save db space
