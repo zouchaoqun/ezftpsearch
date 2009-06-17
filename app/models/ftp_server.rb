@@ -14,7 +14,6 @@ class FtpServer < ActiveRecord::Base
     require 'logger'
     @max_retries = max_retries.to_i
     BasicSocket.do_not_reverse_lookup = true
-    @entry_count = 0
 
     # Trying to open ftp server, exit on max_retries
     retries_count = 0
@@ -53,7 +52,8 @@ class FtpServer < ActiveRecord::Base
         SwapFtpEntry.delete_all(["ftp_server_id=?", id])
         @logger.info("Old ftp entries in swap_ftp_entry deleted before get entries")
       end
-      get_list_of(ftp)
+      @entry_count = 0
+      get_list_of(ftp, '/product/00_test')
       self.in_swap = !in_swap
       save
       # After table swap, delete old ftp entries to save db space
